@@ -1,0 +1,80 @@
+--- 1/check.h
++++ ../xzdec/check.h
+@@ -98,13 +98,8 @@
+ 
+ /// lzma_crc32_table[0] is needed by LZ encoder so we need to keep
+ /// the array two-dimensional.
+-#ifdef HAVE_SMALL
+ extern uint32_t lzma_crc32_table[1][256];
+ extern void lzma_crc32_init(void);
+-#else
+-extern const uint32_t lzma_crc32_table[8][256];
+-extern const uint64_t lzma_crc64_table[4][256];
+-#endif
+ 
+ 
+ /// \brief      Initialize *check depending on type
+--- 1/common.h
++++ 2/common.h
+@@ -14,23 +14,9 @@
+ #define LZMA_COMMON_H
+ 
+ #include "sysdefs.h"
+-#include "mythread.h"
+ #include "tuklib_integer.h"
+ 
+-#if defined(_WIN32) || defined(__CYGWIN__)
+-#	ifdef DLL_EXPORT
+-#		define LZMA_API_EXPORT __declspec(dllexport)
+-#	else
+-#		define LZMA_API_EXPORT
+-#	endif
+-// Don't use ifdef or defined() below.
+-#elif HAVE_VISIBILITY
+-#	define LZMA_API_EXPORT __attribute__((__visibility__("default")))
+-#else
+-#	define LZMA_API_EXPORT
+-#endif
+-
+-#define LZMA_API(type) LZMA_API_EXPORT type LZMA_API_CALL
++#define LZMA_API(type) type LZMA_API_CALL
+ 
+ #include "lzma.h"
+ 
+--- 1/sysdefs.h
++++ 2/sysdefs.h
+@@ -20,9 +20,7 @@
+ // Includes //
+ //////////////
+ 
+-#ifdef HAVE_CONFIG_H
+ #	include <config.h>
+-#endif
+ 
+ // Get standard-compliant stdio functions under MinGW and MinGW-w64.
+ #ifdef __MINGW32__
+@@ -153,14 +151,6 @@
+ // they exists, since that shouldn't do any harm, but may improve portability.
+ #include <string.h>
+ 
+-#ifdef HAVE_STRINGS_H
+-#	include <strings.h>
+-#endif
+-
+-#ifdef HAVE_MEMORY_H
+-#	include <memory.h>
+-#endif
+-
+ // As of MSVC 2013, inline and restrict are supported with
+ // non-standard keywords.
+ #if defined(_WIN32) && defined(_MSC_VER)
+--- 1/tuklib_config.h
++++ 2/tuklib_config.h
+@@ -1,7 +1 @@
+-#ifdef HAVE_CONFIG_H
+ #	include "sysdefs.h"
+-#else
+-#	include <stddef.h>
+-#	include <inttypes.h>
+-#	include <limits.h>
+-#endif
